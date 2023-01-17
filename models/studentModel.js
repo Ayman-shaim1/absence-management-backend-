@@ -1,8 +1,12 @@
 import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
-
 const studentSchema = Schema({
+  filiere: {
+    ref: "filiere",
+    type: Schema.Types.ObjectId,
+    required: true,
+  },
   image: {
     type: String,
     required: true,
@@ -14,10 +18,6 @@ const studentSchema = Schema({
   phone: {
     type: String,
     required: true,
-  },
-  filiere: {
-    type: Schema.Types.ObjectId,
-    ref: "filiere",
   },
   absences: [
     {

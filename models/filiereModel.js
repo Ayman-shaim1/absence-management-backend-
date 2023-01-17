@@ -9,3 +9,5 @@ const filiereSchema = Schema({
 });
 const Filiere = mongoose.model("filiere", filiereSchema);
 export default Filiere;
+
+
