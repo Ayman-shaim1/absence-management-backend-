@@ -17,6 +17,7 @@ export const getStudents = asyncHandler(async (req, res) => {
     const filiere = await Filiere.findById(student.filiere);
     student.filiere = filiere;
   }
+  
   // get total documents in the Students collection :
   const count = await Student.count();
 
@@ -36,3 +37,4 @@ export const getStudent = asyncHandler(async (req, res) => {
   student.filiere = filiere;
   res.json(student);
 });
+

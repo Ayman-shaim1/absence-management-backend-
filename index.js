@@ -5,6 +5,8 @@ import connectDB from "./config/database.js";
 import path from "path";
 import userRoutes from "./routes/userRoutes.js";
 import studentRoutes from "./routes/studentRoutes.js";
+import dashboardRoutes from "./routes/dashboardRoutes.js";
+
 
 import { notFound, errorHandler } from "./middlewares/errorMiddleware.js";
 
@@ -25,6 +27,8 @@ app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 // Define Routes :
 app.use("/api/users", userRoutes);
 app.use("/api/students", studentRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+
 
 app.get("/", (req, res) => res.send("API is running..."));
 

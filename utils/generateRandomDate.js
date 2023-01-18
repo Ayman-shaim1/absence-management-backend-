@@ -4,7 +4,12 @@ function generateRandomDate(startDate, endDate) {
   const timestamp = Math.floor(
     Math.random() * (maxValue - minValue + 1) + minValue
   );
-  return new Date(timestamp);
+  const datestring = new Date(timestamp)
+    .toLocaleDateString()
+    .split("/")
+    .reverse();
+  console.log(datestring);
+  return datestring;
 }
 
 export default generateRandomDate;
