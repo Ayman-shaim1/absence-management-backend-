@@ -6,7 +6,7 @@ import path from "path";
 import userRoutes from "./routes/userRoutes.js";
 import studentRoutes from "./routes/studentRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
-
+import smsRoutes from "./routes/smsRoutes.js";
 
 import { notFound, errorHandler } from "./middlewares/errorMiddleware.js";
 
@@ -28,7 +28,7 @@ app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 app.use("/api/users", userRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/dashboard", dashboardRoutes);
-
+app.use("/api/sms", smsRoutes);
 
 app.get("/", (req, res) => res.send("API is running..."));
 

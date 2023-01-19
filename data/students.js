@@ -1,7 +1,7 @@
 const students = [
   {
     name: "Ivory Innis",
-    phone: "+47 (343) 117-6105",
+    phone: "212644221260",
     image: "https://robohash.org/reprehenderitadin.png?size=200x200&set=set1",
   },
   {
