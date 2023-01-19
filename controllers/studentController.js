@@ -6,8 +6,17 @@ import Filiere from "../models/filiereModel.js";
 // @route   GET /api/students
 // @access  private
 export const getStudents = asyncHandler(async (req, res) => {
-  const { page = 1, limit = 10 } = req.query;
-  let students = await Student.find()
+  const { page = 1, limit = 10, filiere = "", name = "" } = req.query;
+  const where = {};
+  if (filiere && filiere !== "") {
+    where.filiere = filiere;
+  }
+
+  if (name && name !== "") {
+    where.name = name;
+  }
+
+  let students = await Student.find(where)
     // .populate("filiere")
     .limit(limit * 1)
     .skip((page - 1) * limit)
@@ -17,9 +26,9 @@ export const getStudents = asyncHandler(async (req, res) => {
     const filiere = await Filiere.findById(student.filiere);
     student.filiere = filiere;
   }
-  
+
   // get total documents in the Students collection :
-  const count = await Student.count();
+  const count = await Student.find(where).count();
 
   res.json({
     students,
@@ -37,4 +46,3 @@ export const getStudent = asyncHandler(async (req, res) => {
   student.filiere = filiere;
   res.json(student);
 });
-

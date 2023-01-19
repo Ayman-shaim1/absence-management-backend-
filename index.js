@@ -7,6 +7,8 @@ import userRoutes from "./routes/userRoutes.js";
 import studentRoutes from "./routes/studentRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import smsRoutes from "./routes/smsRoutes.js";
+import filiereRoutes from "./routes/filiereRoutes.js";
+
 
 import { notFound, errorHandler } from "./middlewares/errorMiddleware.js";
 
@@ -29,6 +31,8 @@ app.use("/api/users", userRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/sms", smsRoutes);
+app.use("/api/filieres", filiereRoutes);
+
 
 app.get("/", (req, res) => res.send("API is running..."));
 
