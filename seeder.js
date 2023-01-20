@@ -8,6 +8,7 @@ import Filiere from "./models/filiereModel.js";
 import { users, filieres, students } from "./data/index.js";
 import generateRandomDate from "./utils/generateRandomDate.js";
 import connectDB from "./config/database.js";
+import Absence from "./models/absenceModel.js";
 
 dotenv.config();
 connectDB();
@@ -18,27 +19,30 @@ const importData = async () => {
     await Filiere.deleteMany();
     await Student.deleteMany();
     await User.deleteMany();
-
+    await Absence.deleteMany();
     const createdFilieres = await Filiere.insertMany(filieres);
 
     const nStudents = students.map(student => {
       const bit = Math.round(Math.random() * 1);
-      const randomEndLoop = Math.round(Math.random() * 10);
-      const absences = [];
-      for (let i = 0; i < randomEndLoop; i++) {
-        absences.push({
-          dateAbsence: generateRandomDate(new Date(2022, 10, 1), new Date()),
-          nbrHeures: Math.round(Math.random() * 6),
-        });
-      }
+
       return {
         ...student,
         filiere: bit === 0 ? createdFilieres[0]._id : createdFilieres[1]._id,
-        absences: absences,
       };
     });
 
-    await Student.insertMany(nStudents);
+    const createdStudents = await Student.insertMany(nStudents);
+    const absences = [];
+
+    for (let i = 1; i <= 1000; i++) {
+      const randomIndex = Math.round(Math.random() * 99);
+      absences.push({
+        dateAbsence: generateRandomDate(new Date(2022, 10, 1), new Date()),
+        nbrHeures: Math.round(Math.random() * 6),
+        student: createdStudents[randomIndex]._id,
+      });
+    }
+    await Absence.insertMany(absences);
     await User.insertMany(users);
 
     console.log(`Data Imported !`.green.inverse);
@@ -54,7 +58,7 @@ const destroyData = async () => {
     await User.deleteMany();
     await Filiere.deleteMany();
     await Student.deleteMany();
-
+    await Absence.deleteMany();
     console.log(`Data destroyed !`.red.inverse);
     process.exit();
   } catch (error) {

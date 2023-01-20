@@ -19,18 +19,6 @@ const studentSchema = Schema({
     type: String,
     required: true,
   },
-  absences: [
-    {
-      nbrHeures: {
-        type: Number,
-        required: true,
-      },
-      dateAbsence: {
-        type: Date,
-        required: true,
-      },
-    },
-  ],
 });
 
 const Student = mongoose.model("student", studentSchema);

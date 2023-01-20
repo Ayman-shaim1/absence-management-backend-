@@ -8,7 +8,7 @@ function generateRandomDate(startDate, endDate) {
     .toLocaleDateString()
     .split("/")
     .reverse();
-  console.log(datestring);
+
   return datestring;
 }
 

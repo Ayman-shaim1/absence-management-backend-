@@ -8,9 +8,12 @@ import studentRoutes from "./routes/studentRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import smsRoutes from "./routes/smsRoutes.js";
 import filiereRoutes from "./routes/filiereRoutes.js";
-
+import Student from "./models/studentModel.js";
 
 import { notFound, errorHandler } from "./middlewares/errorMiddleware.js";
+import Absence from "./models/absenceModel.js";
+import generateRandomDate from "./utils/generateRandomDate.js";
+import Filiere from "./models/filiereModel.js";
 
 const app = express();
 
@@ -33,7 +36,6 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/sms", smsRoutes);
 app.use("/api/filieres", filiereRoutes);
 
-
 app.get("/", (req, res) => res.send("API is running..."));
 
 // Init Error Middlewares :
@@ -47,3 +49,5 @@ app.listen(
     `Server running in ${process.env.NODE_ENV} on port ${PORT}`.yellow.bold
   )
 );
+
+

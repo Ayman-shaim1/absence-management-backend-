@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import Student from "../models/studentModel.js";
 import Filiere from "../models/filiereModel.js";
+import Absence from "../models/absenceModel.js";
 
 // @desc    get all students
 // @route   GET /api/students
@@ -17,14 +18,22 @@ export const getStudents = asyncHandler(async (req, res) => {
   }
 
   let students = await Student.find(where)
-    // .populate("filiere")
+    // .populate("absence")
     .limit(limit * 1)
     .skip((page - 1) * limit)
     .exec();
 
+  students = JSON.parse(JSON.stringify(students));
+
   for (const student of students) {
+    const absences = await Absence.find({ student: student._id });
     const filiere = await Filiere.findById(student.filiere);
     student.filiere = filiere;
+    let cpt = 0;
+    for (const absence of absences) {
+      cpt += absence.nbrHeures;
+    }
+    student.nbrheuresabsences = cpt;
   }
 
   // get total documents in the Students collection :
