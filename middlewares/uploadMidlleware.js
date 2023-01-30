@@ -1,9 +1,9 @@
 import path from "path";
 import multer from "multer";
 
-const storagePosts = multer.diskStorage({
+const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, "uploads/posts");
+    cb(null, "uploads");
   },
   filename(req, file, cb) {
     cb(
@@ -13,19 +13,7 @@ const storagePosts = multer.diskStorage({
   },
 });
 
-const storageAvatar = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, "uploads/avatars");
-  },
-  filename(req, file, cb) {
-    cb(
-      null,
-      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
-    );
-  },
-});
-
-function checkFileTypeOfPosts(file, cb) {
+function checkFileType(file, cb) {
   const ext = path.extname(file.originalname).toLocaleLowerCase();
 
   let isCorrect = false;
@@ -42,33 +30,9 @@ function checkFileTypeOfPosts(file, cb) {
   }
 }
 
-function checkFileTypeOfAvatars(file, cb) {
-  const ext = path.extname(file.originalname).toLocaleLowerCase();
-
-  let isCorrect = false;
-  if (ext == ".jpeg" || ext == ".png" || ext == ".jpg") {
-    isCorrect = true;
-  } else {
-    isCorrect = false;
-  }
-
-  if (isCorrect) {
-    return cb(null, true);
-  } else {
-    cb("Images Only !!");
-  }
-}
-
-export const uploadPosts = multer({
-  storage: storagePosts,
+export const upload = multer({
+  storage: storage,
   fileFilter: function (req, file, cb) {
-    checkFileTypeOfPosts(file, cb);
-  },
-});
-
-export const uploadAvatar = multer({
-  storage: storageAvatar,
-  fileFilter: function (req, file, cb) {
-    checkFileTypeOfAvatars(file, cb);
+    checkFileType(file, cb);
   },
 });

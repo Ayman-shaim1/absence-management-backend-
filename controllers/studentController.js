@@ -1,4 +1,5 @@
 import asyncHandler from "express-async-handler";
+import fs from "fs";
 import Student from "../models/studentModel.js";
 import Filiere from "../models/filiereModel.js";
 import Absence from "../models/absenceModel.js";
@@ -14,7 +15,7 @@ export const getStudents = asyncHandler(async (req, res) => {
   }
 
   if (name && name !== "") {
-    where.name = name;
+    where.name = { $regex: new RegExp("^" + name.toLowerCase(), "i") };
   }
 
   let students = await Student.find(where)
@@ -54,4 +55,40 @@ export const getStudent = asyncHandler(async (req, res) => {
   const filiere = await Filiere.findById(student.filiere);
   student.filiere = filiere;
   res.json(student);
+});
+
+// @desc    create student
+// @route   POST /api/students
+// @access  private
+export const addStudent = asyncHandler(async (req, res) => {
+  try {
+    if (req.file && req.file.path) {
+      const { phone, name, filiere } = req.body;
+      if (phone && name && filiere) {
+        const createdStudent = await Student.create({
+          phone,
+          name,
+          filiere,
+          image: process.env.SERVER_URL + "/" + req.file.path,
+        });
+
+        res.status(201);
+        res.json(createdStudent);
+      } else {
+        res.status(400);
+        throw new Error("please fill in all fields of the form !");
+      }
+    } else {
+      res.status(400);
+      throw new Error("please add image !");
+    }
+  } catch (error) {
+    if (req.file && req.file.path) {
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+    }
+    res.status(500);
+    throw new Error(error.message);
+  }
 });
