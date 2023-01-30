@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import fs from "fs";
+import path from "path";
 import Student from "../models/studentModel.js";
 import Filiere from "../models/filiereModel.js";
 import Absence from "../models/absenceModel.js";
@@ -90,5 +91,31 @@ export const addStudent = asyncHandler(async (req, res) => {
     }
     res.status(500);
     throw new Error(error.message);
+  }
+});
+
+// @desc    delete student
+// @route   DELET /api/students/:id
+// @access  private
+export const deleteStudent = asyncHandler(async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+    if (student) {
+      const splitimage = student.image.split(process.env.SERVER_URL);
+      const imagepath = splitimage.length > 1 ? splitimage[1] : "";
+      const __dirname = path.resolve();
+      const filepath = path.join(__dirname, imagepath);
+      if (fs.existsSync(filepath)) {
+        fs.unlinkSync(filepath);
+      }
+      await student.remove();
+      res.json({ message: "done !" });
+    } else {
+      res.status(404);
+      throw new Error("student not found !");
+    }
+  } catch (error) {
+    res.status(500);
+    throw new Error(error);
   }
 });
