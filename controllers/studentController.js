@@ -95,7 +95,7 @@ export const addStudent = asyncHandler(async (req, res) => {
 });
 
 // @desc    delete student
-// @route   DELET /api/students/:id
+// @route   DELETE /api/students/:id
 // @access  private
 export const deleteStudent = asyncHandler(async (req, res) => {
   try {
@@ -103,12 +103,47 @@ export const deleteStudent = asyncHandler(async (req, res) => {
     if (student) {
       const splitimage = student.image.split(process.env.SERVER_URL);
       const imagepath = splitimage.length > 1 ? splitimage[1] : "";
-      const __dirname = path.resolve();
-      const filepath = path.join(__dirname, imagepath);
-      if (fs.existsSync(filepath)) {
-        fs.unlinkSync(filepath);
+
+      if (imagepath !== "") {
+        const __dirname = path.resolve();
+        const filepath = path.join(__dirname, imagepath);
+        if (fs.existsSync(filepath)) {
+          fs.unlinkSync(filepath);
+        }
       }
       await student.remove();
+      res.json({ message: "done !" });
+    } else {
+      res.status(404);
+      throw new Error("student not found !");
+    }
+  } catch (error) {
+    res.status(500);
+    throw new Error(error);
+  }
+});
+
+// @desc    delete student
+// @route   PUT /api/students/:id
+// @access  private
+export const updateStudent = asyncHandler(async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+    if (student) {
+      const { phone, name, filiere } = req.body;
+      const splitimage = student.image.split(process.env.SERVER_URL);
+      const imagepath = splitimage.length > 1 ? splitimage[1] : "";
+      const __dirname = path.resolve();
+      const filepath = path.join(__dirname, imagepath);
+      if (req.file && req.file.path) {
+        if (fs.existsSync(filepath)) fs.unlinkSync(filepath);
+        student.image = process.env.SERVER_URL + "/" + req.file.path;
+      }
+      student.phone = phone || student.phone;
+      student.name = name || student.name;
+      student.filiere = filiere || student.filiere;
+
+      await student.save();
       res.json({ message: "done !" });
     } else {
       res.status(404);
