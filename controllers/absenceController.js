@@ -55,3 +55,24 @@ export const removeAbsence = asyncHandler(async (req, res) => {
     throw new Error("Absence not found !");
   }
 });
+
+// @desc    Total Number of hours
+// @route   GET /api/absences/student/:id/totalhours
+// @access  private
+export const getTotalNumberHours = asyncHandler(async (req, res) => {
+  const student = await Student.findById(req.params.id);
+  if (student) {
+    const absences = await Absence.find({ student: req.params.id }).select(
+      "nbrHeures"
+    );
+
+    let total = 0;
+    for (const absence of absences) {
+      total += absence.nbrHeures;
+    }
+    res.json({ total });
+  } else {
+    res.status(404);
+    throw new Error("Student not found !");
+  }
+});
